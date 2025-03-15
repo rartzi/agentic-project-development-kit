@@ -1,0 +1,399 @@
+# Cursor Rules Configuration
+# This file enforces documentation and agile development standards
+
+# Documentation Paths
+docs_paths:
+  core:
+    - app/docs/README.md
+    - app/docs/prd.md
+    - app/docs/architecture/*.md
+    - app/docs/backend/*.md
+    - app/docs/frontend/*.md
+    - app/docs/project-management/*.md
+  tracking:
+    - app/docs/tracking/*.md
+    - app/docs/sessions/*.md
+  guide:
+    - app/.solution-creation-kit/documentation-structure.md
+
+# Prompt Files
+prompt_files:
+  start: app/docs/prompt-start.md
+  end: app/docs/prompt-end.md
+
+# File Templates
+templates:
+  # Core templates
+  - .solution-creation-kit/templates/tracking/pull-request-template.md
+  - .solution-creation-kit/templates/tracking/changelog-template.md
+  - .solution-creation-kit/templates/sessions/session-template.md
+  
+  # Architecture templates
+  - .solution-creation-kit/templates/architecture/*.md
+  
+  # Frontend/Backend templates
+  - .solution-creation-kit/templates/frontend/*.md
+  - .solution-creation-kit/templates/backend/*.md
+  
+  # Project management templates
+  - .solution-creation-kit/templates/project-management/*.md
+  
+  # Legal & Governance templates
+  - .solution-creation-kit/templates/legal/*.md
+  - .solution-creation-kit/templates/governance/*.md
+  
+  # Legacy templates
+  - development-process-temp/templates/*
+  - app/docs/sessions/session-template.md
+
+# Pre-commit Hooks
+hooks:
+  pre_commit:
+    - check_documentation_updates
+    - validate_commit_message
+    - update_changelog
+    - verify_docker_docs
+    - check_security_docs
+    - verify_session_documentation
+    - run_code_quality_checks
+
+# Session Workflow Rules
+session_workflow:
+  # Session Start Process (based on prompt-start.md)
+  start:
+    required_steps:
+      - review_core_documentation
+      - review_task_specific_documentation
+      - understand_development_process
+      - create_session_document
+      - setup_environment
+      - create_branch
+    
+    # Core documentation that must be reviewed
+    core_documentation:
+      - app/docs/prd.md
+      - app/docs/architecture/overview.md
+      - app/docs/sessions/*.md
+    
+    # Task-specific documentation paths
+    task_specific_documentation:
+      frontend:
+        - app/docs/frontend/overview.md
+        - app/docs/frontend/components.md
+        - app/docs/frontend/styling.md
+        - app/docs/frontend/state-management.md
+        - app/docs/frontend/accessibility.md
+      backend:
+        - app/docs/backend/overview.md
+        - app/docs/backend/api-architecture.md
+        - app/docs/backend/data-access.md
+        - app/docs/backend/auth.md
+      fullstack:
+        - app/docs/frontend/overview.md
+        - app/docs/backend/overview.md
+        - app/docs/backend/api-architecture.md
+    
+    # Development process documentation
+    development_process:
+      - app/docs/project-management/development-process.md
+    
+    # Branch naming convention
+    branch_naming:
+      pattern: "^(feature|bugfix)/issue-\\d+-[a-z0-9-]+$"
+      message: "Branch name must follow format: feature/issue-number-description or bugfix/issue-number-description"
+
+  # Session End Process (based on prompt-end.md)
+  end:
+    required_steps:
+      - update_session_documentation
+      - update_project_documentation
+      - run_code_quality_checks
+      - prepare_git_commits
+      - prepare_pull_request
+      - prepare_handoff_notes
+    
+    # Session documentation requirements
+    session_documentation:
+      required_sections:
+        - "Progress Summary"
+        - "Completed Tasks"
+        - "Technical Decisions"
+        - "Files Modified"
+        - "Key Implementations"
+        - "Testing Performed"
+        - "Documentation Updates"
+        - "Next Steps"
+        - "Action Items"
+    
+    # Code quality checks
+    code_quality_checks:
+      commands:
+        - "npm run lint"
+        - "npm test"
+        - "npm run type-check"
+        - "npm run build"
+    
+    # Git commit guidelines
+    git_commit_guidelines:
+      pattern: "^(feat|fix|docs|style|refactor|perf|test|chore)(\\(\\w+\\))?: .+"
+      message: "Commit message must follow conventional commits format"
+      issue_reference: true
+      max_length: 72
+
+# Documentation Rules
+rules:
+  # Enforce template usage
+  - name: "template_usage"
+    triggers:
+      - "feat(*)"
+      - "fix(*)"
+      - "docs(*)"
+    message: "Use appropriate templates from .solution-creation-kit/templates/ directory"
+    required_files:
+      - "app/docs/tracking/*.md"
+    
+  # Enforce documentation updates with code changes
+  - name: "documentation_update"
+    pattern: "^(feat|fix|refactor)\\(.+\\): .+"
+    required_files:
+      - "app/docs/sessions/*.md"
+      - "app/docs/tracking/CHANGELOG.md"
+
+  # Enforce commit message format
+  - name: "commit_format"
+    pattern: "^(feat|fix|docs|style|refactor|test|chore)\\(.+\\): .+"
+    message: "Commit message must follow format: type(scope): message"
+
+  # Require session logs for significant changes
+  - name: "session_log"
+    triggers:
+      - "feat(*)"
+      - "refactor(*)"
+    required_files:
+      - "app/docs/sessions/*.md"
+
+  # Enforce architecture documentation for structural changes
+  - name: "architecture_update"
+    pattern: "^(feat|refactor)\\(arch\\): .+"
+    required_files:
+      - "app/docs/architecture/overview.md"
+      - "app/docs/architecture/api-architecture.md"
+
+  # Enforce product documentation for feature changes
+  - name: "product_update"
+    pattern: "^feat\\(.+\\): .+"
+    required_files:
+      - "app/docs/prd.md"
+      - "app/docs/frontend/styling.md"
+
+  # Enforce deployment documentation
+  - name: "deployment_update"
+    pattern: "^(feat|refactor)\\(deploy\\): .+"
+    required_files:
+      - "app/docs/architecture/deployment-architecture.md"
+      - "app/docs/backend/api-architecture.md"
+
+  # Enforce security documentation
+  - name: "security_update"
+    pattern: "^(feat|fix)\\(security\\): .+"
+    required_files:
+      - "app/docs/architecture/security-architecture.md"
+      
+  # Enforce session start process
+  - name: "session_start_process"
+    triggers:
+      - "session_start"
+    required_steps:
+      - "review_core_documentation"
+      - "create_session_document"
+      - "setup_environment"
+      - "create_branch"
+    
+  # Enforce session end process
+  - name: "session_end_process"
+    triggers:
+      - "session_end"
+      - "pull_request"
+    required_steps:
+      - "update_session_documentation"
+      - "run_code_quality_checks"
+      - "prepare_git_commits"
+
+# File Watchers
+watchers:
+  # Update CHANGELOG.md on commits
+  - trigger: "commit"
+    action: "update_changelog"
+    template: ".solution-creation-kit/templates/tracking/changelog-template.md"
+
+  # Create session log for new features
+  - trigger: "feat(*)"
+    action: "create_session_log"
+    template: ".solution-creation-kit/templates/sessions/session-template.md"
+
+  # Update architecture docs for structural changes
+  - trigger: "refactor(arch)"
+    action: "prompt_architecture_update"
+    files:
+      - "app/docs/architecture/overview.md"
+      - "app/docs/architecture/api-architecture.md"
+
+  # Update deployment docs
+  - trigger: "refactor(deploy)"
+    action: "prompt_deployment_update"
+    files:
+      - "app/docs/architecture/deployment-architecture.md"
+      - "app/docs/backend/api-architecture.md"
+      
+  # Prompt session start process
+  - trigger: "session_start"
+    action: "prompt_session_start"
+    template: ".solution-creation-kit/templates/prompt-start-template.md"
+    
+  # Prompt session end process
+  - trigger: "session_end"
+    action: "prompt_session_end"
+    template: ".solution-creation-kit/templates/prompt-end-template.md"
+
+# Validation Rules
+validation:
+  # Ensure core documentation is up to date
+  core_docs:
+    frequency: "monthly"
+    files:
+      - "app/docs/architecture/*.md"
+      - "app/docs/backend/*.md"
+      - "app/docs/frontend/*.md"
+
+  # Validate commit messages
+  commit_message:
+    pattern: "^(feat|fix|docs|style|refactor|test|chore)\\(.+\\): .+"
+    scopes:
+      - auth
+      - ui
+      - api
+      - docs
+      - arch
+      - test
+      - deps
+      - deploy
+      - security
+
+  # Ensure session logs exist for sprints
+  session_logs:
+    pattern: "app/docs/sessions/\\d{4}-\\d{2}-\\d{2}-.*\\.md"
+    required: true
+    required_sections:
+      - "Progress Summary"
+      - "Completed Tasks"
+      - "Technical Decisions"
+      - "Files Modified"
+      - "Next Steps"
+
+  # Ensure Docker documentation is complete
+  docker_docs:
+    required_sections:
+      - "Deployment Options"
+      - "Environment Variables"
+      - "Container Configuration"
+      - "Security Considerations"
+      
+  # Validate session start process
+  session_start:
+    required_steps:
+      - "review_core_documentation"
+      - "create_session_document"
+      - "setup_environment"
+      - "create_branch"
+    
+  # Validate session end process
+  session_end:
+    required_steps:
+      - "update_session_documentation"
+      - "run_code_quality_checks"
+      - "prepare_git_commits"
+
+# IDE Settings
+settings:
+  # Documentation snippets
+  snippets:
+    - prefix: "!session"
+      template: ".solution-creation-kit/templates/sessions/session-template.md"
+    - prefix: "!pr"
+      template: ".solution-creation-kit/templates/tracking/pull-request-template.md"
+    - prefix: "!changelog"
+      template: ".solution-creation-kit/templates/tracking/changelog-template.md"
+    - prefix: "!arch"
+      template: ".solution-creation-kit/templates/architecture/component-architecture-template.md"
+    - prefix: "!frontend"
+      template: ".solution-creation-kit/templates/frontend/component-architecture-template.md"
+    - prefix: "!accessibility"
+      template: ".solution-creation-kit/templates/frontend/accessibility-guidelines-template.md"
+    - prefix: "!security"
+      template: ".solution-creation-kit/templates/security/security-architecture-template.md"
+    - prefix: "!session-start"
+      template: ".solution-creation-kit/templates/prompt-start-template.md"
+    - prefix: "!session-end"
+      template: ".solution-creation-kit/templates/prompt-end-template.md"
+    - prefix: "!docstructure"
+      template: ".solution-creation-kit/documentation-structure.md"
+
+  # Documentation-related keyboard shortcuts
+  keybindings:
+    - key: "cmd+shift+d"
+      command: "create_session_log"
+    - key: "cmd+shift+c"
+      command: "update_changelog"
+    - key: "cmd+shift+t"
+      command: "create_technical_doc"
+    - key: "cmd+shift+s"
+      command: "prompt_session_start"
+    - key: "cmd+shift+e"
+      command: "prompt_session_end"
+
+# Notifications
+notifications:
+  # Remind about documentation updates
+  - trigger: "feat(*)"
+    message: "Don't forget to update related documentation!"
+    files:
+      - "app/docs/prd.md"
+      - "app/docs/sessions/*.md"
+
+  # Remind about session logs
+  - trigger: "sprint_end"
+    message: "Please create a sprint review session log"
+    action: "create_session_log"
+
+  # Remind about deployment documentation
+  - trigger: "deploy(*)"
+    message: "Update deployment and operations documentation"
+    files:
+      - "app/docs/architecture/deployment-architecture.md"
+      - "app/docs/backend/api-architecture.md"
+
+  # Remind about security documentation
+  - trigger: "security(*)"
+    message: "Update security and governance documentation"
+    files:
+      - "app/docs/architecture/security-architecture.md"
+      
+  # Remind about session start process
+  - trigger: "session_start"
+    message: "Follow the session start process as outlined in prompt-start.md"
+    action: "prompt_session_start"
+    
+  # Remind about session end process
+  - trigger: "session_end"
+    message: "Follow the session end process as outlined in prompt-end.md"
+    action: "prompt_session_end"
+
+# Key Principles (from prompt-start.md)
+key_principles:
+  - "Type Safety: Use TypeScript with strict mode enabled"
+  - "Component Architecture: Follow the established component hierarchy"
+  - "API Design: Adhere to RESTful API design principles"
+  - "Testing: Write tests for all new functionality"
+  - "Documentation: Update documentation for any significant changes"
+  - "Accessibility: Ensure all UI components meet WCAG 2.1 AA standards"
+  - "Performance: Optimize for performance using established patterns"
