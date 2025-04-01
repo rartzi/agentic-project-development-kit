@@ -1,4 +1,4 @@
-<![CDATA[<div align="center">
+<div align="center">
   <img src="AgenticProjectKit.jpg" alt="Agentic Project Development Kit Banner" width="800"/>
   <h1>Agentic Project Development Kit & Vibe Coding Course</h1>
   <p><em>A comprehensive framework for structured, agent-guided software development, alongside materials for the Vibe Coding Course.</em></p>
@@ -149,4 +149,3 @@ By utilizing any content from this repository, you acknowledge that you do so at
 ## License
 
 This project is licensed under the [MIT License](./LICENSE). Please refer to the `LICENSE` file for complete details.
-]]>
