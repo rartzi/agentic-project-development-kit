@@ -9,7 +9,16 @@ header: 'Embrace the Vibes, Master the Flow'
 # Structured Vibe Coding
 ## Harnessing AI for Development
 
-![bg right:50%](../images/NewKindOfCoding-AndrejKarpathy.jpg)
+![bg right](../images/title.png)
+
+---
+
+## Vibe Coding 
+
+![New Kind Of Coding w:500 h:500](../images/NewKindOfCoding-AndrejKarpathy.jpg)
+![bg right 80%](../images/åndrejKarpathy.jpg)
+
+
 
 ---
 
@@ -21,7 +30,6 @@ header: 'Embrace the Vibes, Master the Flow'
     *   *Example: Risks increase without oversight (e.g., the hacked SAS product).*
 *   **Key Takeaway:** Powerful for exploration; structure is key for reliable, production-ready applications.
 
-![bg right](../images/åndrejKarpathy.jpg)
 
 ---
 
